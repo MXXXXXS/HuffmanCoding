@@ -1,0 +1,29 @@
+{
+  "name": "oxygenNotIncluded",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ts-node src/main.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nanoid": "^3.1.30",
+    "treeify": "^1.1.0",
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.173",
+    "@types/node": "^16.11.6",
+    "@types/treeify": "^1.0.0",
+    "lodash": "^4.17.21",
+    "prettier": "^2.4.1",
+    "ts-node-dev": "^1.1.8"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  }
+}
