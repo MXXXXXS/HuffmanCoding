@@ -18,23 +18,25 @@ function pause() {
   })
 }
 
+function log(texts: any, needPause = false) {
+  console.log(texts)
+  return needPause ? pause() : undefined
+}
+
 ;(async () => {
-  // console.log('哈夫曼编码介绍')
+  log('哈夫曼编码介绍\n\n')
 
-  // await pause()
-
-  // console.log('示例输入文本')
+  log('示例输入文本')
   // const filePath = argv.pop() || ''
-  const filePath = 'src/NinePointEight.txt'
+  const filePath = 'src/assets/texts/NinePointEight.txt'
 
   const fileContent = readFileSync(filePath, {
     encoding: 'utf8',
   })
 
-  // console.log(fileContent)
+  log(fileContent)
 
-  // await pause()
-  // console.log('统计一下各个字符的数量')
+  log('统计一下各个字符的数量')
 
   const dictionary = new Map()
 
@@ -48,15 +50,14 @@ function pause() {
     }
   })
 
-  // console.log(dictionary)
-  // await pause()
+  log(dictionary)
 
   interface TreeNode {
     count: number
     id: string
     letter?: string
-    left?: string
-    right?: string
+    0?: string
+    1?: string
     parent?: string
   }
 
@@ -86,11 +87,9 @@ function pause() {
       : [treeNode, ...insertedArray]
   }
 
-  // console.log('对所有字符排序, 按出现的次数')
+  log('对所有字符排序, 按出现的次数')
 
-  // console.log(treeNodes)
-
-  // await pause()
+  log(treeNodes)
 
   const treeNodesDictionary = new Map<string, TreeNode>()
 
@@ -101,8 +100,8 @@ function pause() {
     const selfNode = {
       id: selfId,
       count: leftNode.count + rightNode.count,
-      left: leftNode.id,
-      right: rightNode.id,
+      0: leftNode.id,
+      1: rightNode.id,
     }
     treeNodesDictionary.set(leftNode.id, { ...leftNode, parent: selfId })
     treeNodesDictionary.set(rightNode.id, { ...rightNode, parent: selfId })
@@ -116,9 +115,8 @@ function pause() {
 
   buildHuffmanTree([...treeNodes])
 
-  // console.log('构建好哈夫曼树')
-  // console.log(treeNodesDictionary)
-  // await pause()
+  log('构建好哈夫曼树')
+  log(treeNodesDictionary)
 
   let rootNode!: TreeNode
   for (const iterator of treeNodesDictionary.entries()) {
@@ -131,8 +129,8 @@ function pause() {
 
   interface PrintableTreeNode {
     count: number
-    left?: PrintableTreeNode | PrintableTreeLeaf
-    right?: PrintableTreeNode | PrintableTreeLeaf
+    0?: PrintableTreeNode | PrintableTreeLeaf
+    1?: PrintableTreeNode | PrintableTreeLeaf
   }
 
   interface PrintableTreeLeaf {
@@ -144,8 +142,8 @@ function pause() {
 
   const printableTreeRoot = {
     count: rootNode.count,
-    left: printHuffmanTree({ id: rootNode?.left, path: '0' }),
-    right: printHuffmanTree({ id: rootNode?.right, path: '1' }),
+    0: printHuffmanTree({ id: rootNode?.[0], path: '0' }),
+    1: printHuffmanTree({ id: rootNode?.[1], path: '1' }),
   }
 
   function printHuffmanTree({
@@ -163,22 +161,17 @@ function pause() {
     }
     return {
       count: node?.count || 0,
-      left: printHuffmanTree({ id: node?.left, path: '0' + path }),
-      right: printHuffmanTree({ id: node?.right, path: '1' + path }),
+      0: printHuffmanTree({ id: node?.[0], path: path + '0' }),
+      1: printHuffmanTree({ id: node?.[1], path: path + '1' }),
     }
   }
 
-  // console.log('可视化输出构建的树')
+  log('可视化输出构建的树')
+  log(treeify.asTree(printableTreeRoot as unknown as TreeObject, true, true))
 
-  // console.log(
-  //   treeify.asTree(printableTreeRoot as unknown as TreeObject, true, true)
-  // )
+  log('得到一张字符与二进制码的映射表')
+  log(letterPathMap)
 
-  // await pause()
-  // console.log('得到一张字符与二进制码的映射表')
-  // console.log(letterPathMap)
-
-  // const b
   const compressed = letters
     .map((letter) => {
       return letterPathMap.get(letter)
@@ -195,16 +188,15 @@ function pause() {
     uint8Src.push(parseInt(unint8Str, 2))
   }
 
-  // const data = Buffer.from(compressed, 'utf8')
   writeFileSync(
-    `src/${basename(filePath, '.txt')}(compressed).txt`,
+    `src/assets/texts/${basename(filePath, '.txt')}(compressed).txt`,
     compressed,
     {
       encoding: 'utf8',
     }
   )
   writeFileSync(
-    `src/${basename(filePath, '.txt')}(binary).txt`,
+    `src/assets/texts/${basename(filePath, '.txt')}(binary).txt`,
     Uint8Array.from(uint8Src),
     {
       encoding: 'binary',
